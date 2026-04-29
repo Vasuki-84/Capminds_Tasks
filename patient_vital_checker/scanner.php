@@ -18,4 +18,5 @@ function scanFolder($path)
         }
     }
 }
+
 ?>

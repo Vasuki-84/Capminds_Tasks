@@ -3,6 +3,8 @@
 namespace Utils;
 
 class User {
+
+   // By using public we access from anywhere
     public $username, $email, $password;
 
     // Store incoming value inside object

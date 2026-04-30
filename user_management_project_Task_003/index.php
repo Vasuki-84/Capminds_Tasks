@@ -8,12 +8,12 @@ $users = require_once "data/users.php";
 
 
 use Utils\User;                        // use keyword for optimization
-use Utils\Validator as UserValidator; // Alias to avoid conflicts and improve readability.
+use Utils\Validator as UserValidator; // rename using Alias to avoid conflicts and improve readability.
 
 $validator = new UserValidator();     // Creates object from Validator class
 
 foreach ($users as $data) {           // Alias to avoid conflicts and improve readability.
-   $user = new User($data["username"], $data["email"], $data["password"]); // Creates a User object
+   $user = new User($data["username"], $data["email"], $data["password"]); // Creates a User object,  constructor automatically initializes object properties
     
     // Access displayUser with Arrow operator
     echo $user->displayUser() . "<br>";

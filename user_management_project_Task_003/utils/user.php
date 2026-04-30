@@ -19,3 +19,4 @@ class User {
         return "User: {$this->username}";
     }
 }
+?>

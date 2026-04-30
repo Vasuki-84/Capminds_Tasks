@@ -26,3 +26,4 @@ foreach ($users as $data) {           // Alias to avoid conflicts and improve re
 }
 
 
+?>

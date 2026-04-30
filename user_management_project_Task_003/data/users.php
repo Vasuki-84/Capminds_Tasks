@@ -6,3 +6,4 @@ return [
     ["username" => "Anu", "email" => "anuemail.com", "password" => "123"],
     ["username" => "Vijay", "email" => "vijay@gmail.com", "password" => "vijay789"]
 ];
+?>

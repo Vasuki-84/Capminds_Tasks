@@ -4,3 +4,4 @@ function line() {
     echo "<hr>";
 }
 
+?>

@@ -15,3 +15,4 @@ class Validator {
         return strlen($password) >= 6 ? "Strong Valid Password" : "Weak";
     }
 }
+?>

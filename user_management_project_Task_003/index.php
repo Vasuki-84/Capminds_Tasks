@@ -13,7 +13,7 @@ use Utils\Validator as UserValidator; // rename using Alias to avoid conflicts a
 $validator = new UserValidator();     // Creates object from Validator class
 
 foreach ($users as $data) {           // Alias to avoid conflicts and improve readability.
-   $user = new User($data["username"], $data["email"], $data["password"]); // Creates a User object,  constructor automatically initializes object properties
+   $user = new User($data["username"], $data["email"], $data["password"]); //  create object, call constructor automatically, store values inside object
     
     // Access displayUser with Arrow operator
     echo $user->displayUser() . "<br>";

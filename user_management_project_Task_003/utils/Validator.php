@@ -4,7 +4,7 @@ namespace Utils;
 
 class Validator {
     public function validateUsername($username) { //  Parameter receives the value sent to method.
-        return strlen($username) >= 3 ? "Valid" : "Invalid";  // Ternary operator
+        return strlen($username) >= 3 ? "Valid" : "Invalid";  // Ternary operator like if else
     }
 
     public function validateEmail($email) {

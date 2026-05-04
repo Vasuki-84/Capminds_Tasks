@@ -1,11 +1,31 @@
 <?php
-function validateUsername($u){
-     return preg_match('/^[a-zA-Z0-9_]{3,20}$/',$u);
+
+function validateUsername($username) {
+    if (empty($username)) {
+        return "Username is required";
+    }
+    if (strlen($username) < 3) {
+        return "Username must be at least 3 characters";
+    }
+    return "";
 }
-function validateEmail($e){ 
-    return filter_var($e,FILTER_VALIDATE_EMAIL); 
+
+function validateEmail($email) {
+    if (empty($email)) {
+        return "Email is required";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return "Invalid email format";
+    }
+    return "";
 }
-function validatePassword($p){ 
-    return preg_match('/^(?=.*[A-Z])(?=.*\d).{6,}$/',$p);
+
+function validatePassword($password) {
+    if (empty($password)) {
+        return "Password is required";
+    }
+    if (strlen($password) < 6) {
+        return "Password must be at least 6 characters";
+    }
+    return "";
 }
-?>

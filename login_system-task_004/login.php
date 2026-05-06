@@ -56,7 +56,7 @@ unset($_SESSION['error']);  // Flash message = temporary message shown only for 
 
                         <input type="password" name="password"
                                class="form-control mb-3 rounded-3"
-                               placeholder="Password">
+                               placeholder="Password"  autocomplete="new-password">
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="form-check">

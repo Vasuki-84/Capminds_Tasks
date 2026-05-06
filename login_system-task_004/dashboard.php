@@ -20,8 +20,8 @@ $theme = $_SESSION['theme'];
 
 <body class="<?php echo $theme; ?>">
 
-<div class="container mt-5">
-    <div class="card p-4">
+<div class="container d-flex justify-content-center  mt-5">
+    <div class="card p-4 w-100" style="max-width:500px;">
         <h2>Welcome, <?php echo $username; ?></h2>
         <p>Email: <?php echo $email; ?></p>
         <p>Theme: <?php echo $theme; ?></p>

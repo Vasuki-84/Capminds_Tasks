@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();  // session resumes
 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");

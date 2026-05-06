@@ -1,11 +1,11 @@
 <?php
-session_start();
+session_start();  // session starts
 
-$username = $_COOKIE['remember_username'] ?? "";
-$theme = $_COOKIE['user_theme'] ?? "light";
+$username = $_COOKIE['remember_username'] ?? ""; // NULL coalesing 
+$theme = $_COOKIE['user_theme'] ?? "light"; // Read browser cookies
 
-$error = $_SESSION['error'] ?? "";
-unset($_SESSION['error']);
+$error = $_SESSION['error'] ?? "";  // Store server-side data
+unset($_SESSION['error']);  // Flash message = temporary message shown only for one request
 ?>
 
 <!DOCTYPE html>
@@ -133,3 +133,6 @@ input:focus {
 
 </body>
 </html>
+
+
+<!-- http://localhost/Capminds-Tasks/login_system-task_004/login.php -->

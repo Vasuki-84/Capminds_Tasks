@@ -82,7 +82,7 @@ $totalPages = ceil($totalRow['total'] / $limit);
 
 <table class="table table-bordered table-hover">
 
-    <tr>
+    <tr  class="table-secondary">
 
         <th>ID</th>
         <th>Name</th>

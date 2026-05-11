@@ -6,7 +6,7 @@ $error = "";
 $success = "";
 
 if (isset($_POST['submit'])) {
-
+// 
     $patient_name = trim($_POST['patient_name']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
         // Check unique email
 
         $checkEmail = "SELECT * FROM patients WHERE email='$email'";
-        $result = mysqli_query($conn, $checkEmail);
+        $result = mysqli_query($conn, $checkEmail);  // $conn database connection use panni , $checkEmail query execute pannu
 
         if (mysqli_num_rows($result) > 0) {
 

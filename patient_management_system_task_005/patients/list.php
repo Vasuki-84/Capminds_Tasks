@@ -17,7 +17,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : "";
 
 $sort = isset($_GET['sort']) ? $_GET['sort'] : "patient_name ASC";
 
-// Query
+// Query -1
 
 $sql = "SELECT * FROM patients
 WHERE patient_name LIKE '%$search%'
@@ -114,7 +114,7 @@ $totalPages = ceil($totalRow['total'] / $limit);
             <td><?php echo $row['diagnosis']; ?></td>
 
             <td>
-
+  <div class="d-flex flex-column flex-sm-row gap-2">
                 <a href="edit.php?id=<?php echo $row['id']; ?>"
                    class="btn btn-warning btn-sm">
 
@@ -129,8 +129,8 @@ $totalPages = ceil($totalRow['total'] / $limit);
                     Delete
 
                 </a>
-
-            </td>
+</div>
+</td>
 
         </tr>
 

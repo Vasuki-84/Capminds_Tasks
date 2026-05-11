@@ -18,9 +18,10 @@ $search = isset($_GET['search']) ? $_GET['search'] : "";
 $sort = isset($_GET['sort']) ? $_GET['sort'] : "patient_name ASC";
 
 // Query -1
+// LIKE-  LIKE - Pattern matching / partial search
 
 $sql = "SELECT * FROM patients
-WHERE patient_name LIKE '%$search%'
+WHERE patient_name LIKE '%$search%'  
 OR diagnosis LIKE '%$search%'
 
 ORDER BY $sort

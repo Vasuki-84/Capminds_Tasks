@@ -15,7 +15,7 @@ $conn = mysqli_connect(   // Built-in PHP function, Used to connect MySQL
 );
 
 if (!$conn) {
-    die("Connection Failed: " . mysqli_connect_error());
+    die("Connection Failed: " . mysqli_connect_error());  // die()- Stop the program immediately
 }
 
 ?>

@@ -5,7 +5,7 @@ include("../config/db.php");
 $error = "";
 $success = "";
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit'])) { // Form la patient_name input la user enter panna value ah eduthu variable la store pannu
 // 
     $patient_name = trim($_POST['patient_name']);
     $email = trim($_POST['email']);

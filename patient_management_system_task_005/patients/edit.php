@@ -2,32 +2,76 @@
 
 include("../config/db.php");
 
-$id = $_GET['id'];
+/*
+|--------------------------------------------------------------------------
+| GET PATIENT ID FROM URL
+|--------------------------------------------------------------------------
+*/
 
-$query = "SELECT * FROM patients WHERE id='$id'";
-$result = mysqli_query($conn, $query);
+$id = base64_decode($_GET['id']);
+
+/*
+|--------------------------------------------------------------------------
+| FETCH PATIENT DATA USING PREPARED STATEMENT
+|--------------------------------------------------------------------------
+*/
+
+$selectQuery = "SELECT * FROM patients WHERE id = ?";
+
+$stmt = mysqli_prepare($conn, $selectQuery);
+
+mysqli_stmt_bind_param($stmt, "i", $id);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
 
 $row = mysqli_fetch_assoc($result);
 
+/*
+|--------------------------------------------------------------------------
+| UPDATE PATIENT
+|--------------------------------------------------------------------------
+*/
+
 if (isset($_POST['update'])) {
 
-    $patient_name = $_POST['patient_name'];
-    $phone = $_POST['phone'];
-    $age = $_POST['age'];
-    $gender = $_POST['gender'];
-    $diagnosis = $_POST['diagnosis'];
+    $patient_name = trim($_POST['patient_name']);
+    $phone = trim($_POST['phone']);
+    $age = trim($_POST['age']);
+    $gender = trim($_POST['gender']);
+    $diagnosis = trim($_POST['diagnosis']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE QUERY USING PREPARED STATEMENT
+    |--------------------------------------------------------------------------
+    */
 
     $updateQuery = "UPDATE patients SET
 
-    patient_name='$patient_name',
-    phone='$phone',
-    age='$age',
-    gender='$gender',
-    diagnosis='$diagnosis'
+    patient_name = ?,
+    phone = ?,
+    age = ?,
+    gender = ?,
+    diagnosis = ?
 
-    WHERE id='$id'";
+    WHERE id = ?";
 
-    mysqli_query($conn, $updateQuery);
+    $updateStmt = mysqli_prepare($conn, $updateQuery);
+
+    mysqli_stmt_bind_param(
+        $updateStmt,
+        "ssissi",
+        $patient_name,
+        $phone,
+        $age,
+        $gender,
+        $diagnosis,
+        $id
+    );
+
+    mysqli_stmt_execute($updateStmt);
 
     header("Location: list.php");
     exit;
@@ -48,7 +92,8 @@ include("../includes/header.php");
 <input type="text"
        name="patient_name"
        class="form-control"
-       value="<?php echo $row['patient_name']; ?>">
+       value="<?php echo htmlspecialchars($row['patient_name']); ?>"
+       required>
 
 </div>
 
@@ -59,7 +104,8 @@ include("../includes/header.php");
 <input type="text"
        name="phone"
        class="form-control"
-       value="<?php echo $row['phone']; ?>">
+       value="<?php echo htmlspecialchars($row['phone']); ?>"
+       required>
 
 </div>
 
@@ -70,7 +116,8 @@ include("../includes/header.php");
 <input type="number"
        name="age"
        class="form-control"
-       value="<?php echo $row['age']; ?>">
+       value="<?php echo htmlspecialchars($row['age']); ?>"
+       required>
 
 </div>
 
@@ -104,7 +151,8 @@ Other
 <label>Diagnosis</label>
 
 <textarea name="diagnosis"
-          class="form-control"><?php echo $row['diagnosis']; ?></textarea>
+          class="form-control"
+          required><?php echo htmlspecialchars($row['diagnosis']); ?></textarea>
 
 </div>
 

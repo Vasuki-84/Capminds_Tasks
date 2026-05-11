@@ -3,36 +3,128 @@
 include("../config/db.php");
 include("../includes/header.php");
 
-// Pagination
+/*
+|--------------------------------------------------------------------------
+| PAGINATION
+|--------------------------------------------------------------------------
+*/
 
 $limit = 5;
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
 $offset = ($page - 1) * $limit;
 
-// Search
+/*
+|--------------------------------------------------------------------------
+| SEARCH
+|--------------------------------------------------------------------------
+*/
 
-$search = isset($_GET['search']) ? $_GET['search'] : "";
+$search = isset($_GET['search']) ? trim($_GET['search']) : "";
 
-// Sorting
+/*
+|--------------------------------------------------------------------------
+| SORTING
+|--------------------------------------------------------------------------
+*/
+
+$allowedSorts = [
+
+    "patient_name ASC",
+    "patient_name DESC",
+    "age ASC",
+    "age DESC"
+
+];
 
 $sort = isset($_GET['sort']) ? $_GET['sort'] : "patient_name ASC";
 
-// Query -1
-// LIKE-  LIKE - Pattern matching / partial search
+/*
+|--------------------------------------------------------------------------
+| VALIDATE SORT VALUE
+|--------------------------------------------------------------------------
+*/
+
+if (!in_array($sort, $allowedSorts)) {
+
+    $sort = "patient_name ASC";
+}
+
+/*
+|--------------------------------------------------------------------------
+| SEARCH PATTERN
+|--------------------------------------------------------------------------
+*/
+
+$searchTerm = "%$search%";
+
+/*
+|--------------------------------------------------------------------------
+| PREPARED STATEMENT QUERY
+|--------------------------------------------------------------------------
+*/
 
 $sql = "SELECT * FROM patients
-WHERE patient_name LIKE '%$search%'  
-OR diagnosis LIKE '%$search%'
+
+WHERE patient_name LIKE ?
+OR diagnosis LIKE ?
 
 ORDER BY $sort
-LIMIT $offset, $limit";
 
-$result = mysqli_query($conn, $sql);
+LIMIT ?, ?";
 
-// Total records
+/*
+|--------------------------------------------------------------------------
+| PREPARE QUERY
+|--------------------------------------------------------------------------
+*/
+
+$stmt = mysqli_prepare($conn, $sql);
+
+/*
+|--------------------------------------------------------------------------
+| BIND PARAMETERS
+|--------------------------------------------------------------------------
+*/
+
+mysqli_stmt_bind_param(
+
+    $stmt,
+    "ssii",
+    $searchTerm,
+    $searchTerm,
+    $offset,
+    $limit
+
+);
+
+/*
+|--------------------------------------------------------------------------
+| EXECUTE QUERY
+|--------------------------------------------------------------------------
+*/
+
+mysqli_stmt_execute($stmt);
+
+/*
+|--------------------------------------------------------------------------
+| GET RESULT
+|--------------------------------------------------------------------------
+*/
+
+$result = mysqli_stmt_get_result($stmt);
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL RECORDS
+|--------------------------------------------------------------------------
+*/
 
 $totalQuery = "SELECT COUNT(*) as total FROM patients";
+
 $totalResult = mysqli_query($conn, $totalQuery);
+
 $totalRow = mysqli_fetch_assoc($totalResult);
 
 $totalPages = ceil($totalRow['total'] / $limit);
@@ -51,37 +143,36 @@ $totalPages = ceil($totalRow['total'] / $limit);
                name="search"
                class="form-control me-2"
                placeholder="Search"
-               value="<?php echo $search; ?>">
+               value="<?php echo htmlspecialchars($search); ?>">
 
-       
-    <div class="col-md-4 col-sm-6 me-3">
-    
-    <select name="sort"
-            class="form-select shadow-sm border-2 rounded-3 form-control me-2">
+        <div class="col-md-4 col-sm-6 me-3">
 
-        <option selected disabled>
-            Sort Patients
-        </option>
+            <select name="sort"
+                    class="form-select shadow-sm border-2 rounded-3 form-control me-2">
 
-        <option value="patient_name ASC">
-            🔤 Name A-Z
-        </option>
+                <option selected disabled>
+                    Sort Patients
+                </option>
 
-        <option value="patient_name DESC">
-            🔠 Name Z-A
-        </option>
+                <option value="patient_name ASC">
+                    🔤 Name A-Z
+                </option>
 
-        <option value="age ASC">
-            👶 Age Low-High
-        </option>
+                <option value="patient_name DESC">
+                    🔠 Name Z-A
+                </option>
 
-        <option value="age DESC">
-            👴 Age High-Low
-        </option>
+                <option value="age ASC">
+                    👶 Age Low-High
+                </option>
 
-    </select>
+                <option value="age DESC">
+                    👴 Age High-Low
+                </option>
 
-</div>
+            </select>
+
+        </div>
 
         <button class="btn btn-primary">
             Search
@@ -93,59 +184,63 @@ $totalPages = ceil($totalRow['total'] / $limit);
 
 <table class="table table-bordered table-hover">
 
-    <tr  class="table-secondary">
+<tr class="table-secondary">
 
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Diagnosis</th>
-        <th>Actions</th>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Age</th>
+    <th>Gender</th>
+    <th>Diagnosis</th>
+    <th>Actions</th>
 
-    </tr>
+</tr>
 
-    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+<?php while ($row = mysqli_fetch_assoc($result)) { ?>
 
-        <tr>
+<tr>
 
-            <td><?php echo $row['id']; ?></td>
+    <td><?php echo $row['id']; ?></td>
 
-            <td><?php echo $row['patient_name']; ?></td>
+    <td><?php echo htmlspecialchars($row['patient_name']); ?></td>
 
-            <td><?php echo $row['email']; ?></td>
+    <td><?php echo htmlspecialchars($row['email']); ?></td>
 
-            <td><?php echo $row['phone']; ?></td>
+    <td><?php echo htmlspecialchars($row['phone']); ?></td>
 
-            <td><?php echo $row['age']; ?></td>
+    <td><?php echo htmlspecialchars($row['age']); ?></td>
 
-            <td><?php echo $row['gender']; ?></td>
+    <td><?php echo htmlspecialchars($row['gender']); ?></td>
 
-            <td><?php echo $row['diagnosis']; ?></td>
+    <td><?php echo htmlspecialchars($row['diagnosis']); ?></td>
 
-            <td>
-  <div class="d-flex flex-column flex-sm-row gap-2">
-                <a href="edit.php?id=<?php echo $row['id']; ?>"
-                   class="btn btn-warning btn-sm">
+    <td>
 
-                    Edit
+        <div class="d-flex flex-column flex-sm-row gap-2">
 
-                </a>
+            <a href="edit.php?id=<?php echo base64_encode($row['id']); ?>"
+               class="btn btn-warning btn-sm">
 
-                <a href="delete.php?id=<?php echo $row['id']; ?>"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('Delete this patient?')">
+                Edit
 
-                    Delete
+            </a>
 
-                </a>
-</div>
-</td>
+            <a href="delete.php?id=<?php echo base64_encode($row['id']); ?>"
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete this patient?')">
 
-        </tr>
+                Delete
 
-    <?php } ?>
+            </a>
+
+        </div>
+
+    </td>
+
+</tr>
+
+<?php } ?>
 
 </table>
 

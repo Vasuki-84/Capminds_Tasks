@@ -5,8 +5,14 @@ include("../config/db.php");
 $error = "";
 $success = "";
 
-if (isset($_POST['submit'])) { // Form la patient_name input la user enter panna value ah eduthu variable la store pannu
-// 
+if (isset($_POST['submit'])) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET FORM DATA
+    |--------------------------------------------------------------------------
+    */
+
     $patient_name = trim($_POST['patient_name']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
@@ -14,7 +20,11 @@ if (isset($_POST['submit'])) { // Form la patient_name input la user enter panna
     $gender = trim($_POST['gender']);
     $diagnosis = trim($_POST['diagnosis']);
 
-    // Validation
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
 
     if (
         empty($patient_name) ||
@@ -37,24 +47,68 @@ if (isset($_POST['submit'])) { // Form la patient_name input la user enter panna
 
     } else {
 
-        // Check unique email
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK UNIQUE EMAIL USING PREPARED STATEMENT
+        |--------------------------------------------------------------------------
+        */
 
-        $checkEmail = "SELECT * FROM patients WHERE email='$email'";
-        $result = mysqli_query($conn, $checkEmail);  // $conn database connection use panni , $checkEmail query execute pannu
+        $checkEmailQuery = "SELECT id FROM patients WHERE email = ?";
 
-        if (mysqli_num_rows($result) > 0) {
+        $checkStmt = mysqli_prepare($conn, $checkEmailQuery);
+
+        mysqli_stmt_bind_param($checkStmt, "s", $email);
+
+        mysqli_stmt_execute($checkStmt);
+
+        $checkResult = mysqli_stmt_get_result($checkStmt);
+
+        /*
+        |--------------------------------------------------------------------------
+        | EMAIL EXISTS CHECK
+        |--------------------------------------------------------------------------
+        */
+
+        if (mysqli_num_rows($checkResult) > 0) {
 
             $error = "Email already exists.";
 
         } else {
 
-            $sql = "INSERT INTO patients
+            /*
+            |--------------------------------------------------------------------------
+            | INSERT PATIENT USING PREPARED STATEMENT
+            |--------------------------------------------------------------------------
+            */
+
+            $insertQuery = "INSERT INTO patients
+
             (patient_name, email, phone, age, gender, diagnosis)
 
-            VALUES
-            ('$patient_name', '$email', '$phone', '$age', '$gender', '$diagnosis')";
+            VALUES (?, ?, ?, ?, ?, ?)";
 
-            if (mysqli_query($conn, $sql)) {
+            $insertStmt = mysqli_prepare($conn, $insertQuery);
+
+            mysqli_stmt_bind_param(
+
+                $insertStmt,
+                "sssiss",
+                $patient_name,
+                $email,
+                $phone,
+                $age,
+                $gender,
+                $diagnosis
+
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | EXECUTE INSERT QUERY
+            |--------------------------------------------------------------------------
+            */
+
+            if (mysqli_stmt_execute($insertStmt)) {
 
                 $success = "Patient added successfully.";
 
@@ -77,72 +131,107 @@ include("../includes/header.php");
     </a>
 
     <?php if ($error) { ?>
+
         <div class="alert alert-danger">
+
             <?php echo $error; ?>
+
         </div>
+
     <?php } ?>
 
     <?php if ($success) { ?>
+
         <div class="alert alert-success">
+
             <?php echo $success; ?>
+
         </div>
+
     <?php } ?>
 
     <form method="POST">
 
         <div class="mb-3">
+
             <label>Patient Name</label>
 
             <input type="text"
                    name="patient_name"
-                   class="form-control">
+                   class="form-control"
+                   required>
+
         </div>
 
         <div class="mb-3">
+
             <label>Email</label>
 
             <input type="email"
                    name="email"
-                   class="form-control">
+                   class="form-control"
+                   required>
+
         </div>
 
         <div class="mb-3">
+
             <label>Phone</label>
 
             <input type="text"
                    name="phone"
-                   class="form-control">
+                   class="form-control"
+                   required>
+
         </div>
 
         <div class="mb-3">
+
             <label>Age</label>
 
             <input type="number"
                    name="age"
-                   class="form-control">
+                   class="form-control"
+                   required>
+
         </div>
 
         <div class="mb-3">
+
             <label>Gender</label>
 
-            <select name="gender" class="form-control">
+            <select name="gender"
+                    class="form-control"
+                    required>
 
-                <option value="">Select</option>
+                <option value="">
+                    Select
+                </option>
 
-                <option value="Male">Male</option>
+                <option value="Male">
+                    Male
+                </option>
 
-                <option value="Female">Female</option>
+                <option value="Female">
+                    Female
+                </option>
 
-                <option value="Other">Other</option>
+                <option value="Other">
+                    Other
+                </option>
 
             </select>
+
         </div>
 
         <div class="mb-3">
+
             <label>Diagnosis</label>
 
             <textarea name="diagnosis"
-                      class="form-control"></textarea>
+                      class="form-control"
+                      required></textarea>
+
         </div>
 
         <button type="submit"

@@ -4,6 +4,3 @@ header("Location: patients/list.php");  // Sending HTTP headers, Location: Redir
 exit;  // Stops script execution immediately.
 
 ?>
-
-
-<!-- http://localhost/Capminds-Tasks/patient_management_system_task_005/patients/list.php -->

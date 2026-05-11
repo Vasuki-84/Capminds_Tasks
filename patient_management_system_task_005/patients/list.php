@@ -52,25 +52,35 @@ $totalPages = ceil($totalRow['total'] / $limit);
                placeholder="Search"
                value="<?php echo $search; ?>">
 
-        <select name="sort" class="form-control me-2">
+       
+    <div class="col-md-4 col-sm-6 me-3">
+    
+    <select name="sort"
+            class="form-select shadow-sm border-2 rounded-3 form-control me-2">
 
-            <option value="patient_name ASC">
-                Name A-Z
-            </option>
+        <option selected disabled>
+            Sort Patients
+        </option>
 
-            <option value="patient_name DESC">
-                Name Z-A
-            </option>
+        <option value="patient_name ASC">
+            🔤 Name A-Z
+        </option>
 
-            <option value="age ASC">
-                Age ASC
-            </option>
+        <option value="patient_name DESC">
+            🔠 Name Z-A
+        </option>
 
-            <option value="age DESC">
-                Age DESC
-            </option>
+        <option value="age ASC">
+            👶 Age Low-High
+        </option>
 
-        </select>
+        <option value="age DESC">
+            👴 Age High-Low
+        </option>
+
+    </select>
+
+</div>
 
         <button class="btn btn-primary">
             Search

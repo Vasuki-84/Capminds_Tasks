@@ -26,7 +26,7 @@ mysqli_stmt_execute($stmt);
 
 $result = mysqli_stmt_get_result($stmt);
 
-$row = mysqli_fetch_assoc($result);
+$row = mysqli_fetch_assoc($result);  // Result la iruka ONE row ah associative array-ah convert pannum
 
 /*
 |--------------------------------------------------------------------------
@@ -60,9 +60,9 @@ if (isset($_POST['update'])) {
 
     $updateStmt = mysqli_prepare($conn, $updateQuery);
 
-    mysqli_stmt_bind_param(
-        $updateStmt,
-        "ssissi",
+    mysqli_stmt_bind_param(  // already stored values ah query placeholders ku attach pannum
+        $updateStmt,  // prepared statement reference
+        "ssissi",  // datatype definition
         $patient_name,
         $phone,
         $age,

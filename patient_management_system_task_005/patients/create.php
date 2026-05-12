@@ -13,7 +13,7 @@ if (isset($_POST['submit'])) {
     |--------------------------------------------------------------------------
     */
 
-    $patient_name = trim($_POST['patient_name']);
+    $patient_name = trim($_POST['patient_name']);  // $POST - super global array.
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
     $age = trim($_POST['age']);
@@ -53,15 +53,15 @@ if (isset($_POST['submit'])) {
         |--------------------------------------------------------------------------
         */
 
-        $checkEmailQuery = "SELECT id FROM patients WHERE email = ?";
+        $checkEmailQuery = "SELECT id FROM patients WHERE email = ?";  // ? - placeholder marker - Value later varum
 
-        $checkStmt = mysqli_prepare($conn, $checkEmailQuery);
+        $checkStmt = mysqli_prepare($conn, $checkEmailQuery);  // Database query structure prepare pannum
 
-        mysqli_stmt_bind_param($checkStmt, "s", $email);
+        mysqli_stmt_bind_param($checkStmt, "s", $email); // Value attach pannrom
 
-        mysqli_stmt_execute($checkStmt);
+        mysqli_stmt_execute($checkStmt);  // run panni email exists ahh eruka nu check pandrom
 
-        $checkResult = mysqli_stmt_get_result($checkStmt);
+        $checkResult = mysqli_stmt_get_result($checkStmt);  // result store pandrom 
 
         /*
         |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
         |--------------------------------------------------------------------------
         */
 
-        if (mysqli_num_rows($checkResult) > 0) {
+        if (mysqli_num_rows($checkResult) > 0) {  // How many rows came from database
 
             $error = "Email already exists.";
 

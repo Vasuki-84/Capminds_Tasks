@@ -143,7 +143,7 @@ $totalPages = ceil($totalRow['total'] / $limit);
                name="search"
                class="form-control me-2"
                placeholder="Search"
-               value="<?php echo htmlspecialchars($search); ?>">
+               value="<?php echo htmlspecialchars($search); ?>">   // input value exists even after page refresh / reload 
 
         <div class="col-md-4 col-sm-6 me-3">
 

@@ -4,6 +4,16 @@ include("../config/db.php");
 
 /*
 |--------------------------------------------------------------------------
+| FETCH DOCTORS
+|--------------------------------------------------------------------------
+*/
+
+$doctorQuery = "SELECT * FROM doctors";
+
+$doctorResult = mysqli_query($conn, $doctorQuery);
+
+/*
+|--------------------------------------------------------------------------
 | GET PATIENT ID FROM URL
 |--------------------------------------------------------------------------
 */
@@ -40,8 +50,8 @@ if (isset($_POST['update'])) {
     $phone = trim($_POST['phone']);
     $age = trim($_POST['age']);
     $gender = trim($_POST['gender']);
+    $doctor_id = trim($_POST['doctor_id']);
     $diagnosis = trim($_POST['diagnosis']);
-
     /*
     |--------------------------------------------------------------------------
     | UPDATE QUERY USING PREPARED STATEMENT
@@ -54,6 +64,7 @@ if (isset($_POST['update'])) {
     phone = ?,
     age = ?,
     gender = ?,
+    doctor_id = ?,
     diagnosis = ?
 
     WHERE id = ?";
@@ -62,13 +73,15 @@ if (isset($_POST['update'])) {
 
     mysqli_stmt_bind_param(  // already stored values ah query placeholders ku attach pannum
         $updateStmt,  // prepared statement reference
-        "ssissi",  // datatype definition
-        $patient_name,
-        $phone,
-        $age,
-        $gender,
-        $diagnosis,
-        $id
+
+    "ssisisi", //   // datatype definition
+    $patient_name,
+    $phone,
+    $age,
+    $gender,
+    $doctor_id,
+    $diagnosis,
+    $id
     );
 
     mysqli_stmt_execute($updateStmt);
@@ -141,6 +154,44 @@ Female
 <?php if ($row['gender'] == 'Other') echo 'selected'; ?>>
 Other
 </option>
+
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label>Select Doctor</label>
+
+<select name="doctor_id"
+        class="form-control"
+        required>
+
+    <option value="">
+        Select Doctor
+    </option>
+
+    <?php while ($doctor = mysqli_fetch_assoc($doctorResult)) { ?>
+
+        <option value="<?php echo $doctor['id']; ?>"
+
+            <?php
+            if ($doctor['id'] == $row['doctor_id']) {
+                echo "selected";
+            }
+            ?>
+
+        >
+
+            <?php echo $doctor['doctor_name']; ?>
+
+            -
+
+            <?php echo $doctor['specialization']; ?>
+
+        </option>
+
+    <?php } ?>
 
 </select>
 

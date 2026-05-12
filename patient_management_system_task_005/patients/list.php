@@ -65,7 +65,16 @@ $searchTerm = "%$search%";
 |--------------------------------------------------------------------------
 */
 
-$sql = "SELECT * FROM patients
+$sql = "SELECT patients.*,
+
+        doctors.doctor_name,
+        doctors.specialization
+
+FROM patients
+
+LEFT JOIN doctors
+
+ON patients.doctor_id = doctors.id
 
 WHERE patient_name LIKE ?
 OR diagnosis LIKE ?
@@ -143,7 +152,7 @@ $totalPages = ceil($totalRow['total'] / $limit);
                name="search"
                class="form-control me-2"
                placeholder="Search"
-               value="<?php echo htmlspecialchars($search); ?>">   // input value exists even after page refresh / reload 
+               value="<?php echo htmlspecialchars($search); ?>">  
 
         <div class="col-md-4 col-sm-6 me-3">
 
@@ -186,14 +195,15 @@ $totalPages = ceil($totalRow['total'] / $limit);
 
 <tr class="table-secondary">
 
-    <th>ID</th>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Phone</th>
-    <th>Age</th>
-    <th>Gender</th>
-    <th>Diagnosis</th>
-    <th>Actions</th>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Age</th>
+<th>Gender</th>
+<th>Doctor</th>
+<th>Diagnosis</th>
+<th>Actions</th>
 
 </tr>
 
@@ -212,6 +222,16 @@ $totalPages = ceil($totalRow['total'] / $limit);
     <td><?php echo htmlspecialchars($row['age']); ?></td>
 
     <td><?php echo htmlspecialchars($row['gender']); ?></td>
+
+    <td>
+
+    <?php echo htmlspecialchars($row['doctor_name']); ?>
+
+    -
+
+    <?php echo htmlspecialchars($row['specialization']); ?>
+
+</td>
 
     <td><?php echo htmlspecialchars($row['diagnosis']); ?></td>
 

@@ -1,6 +1,15 @@
 <?php
 
 include("../config/db.php");
+/*
+|--------------------------------------------------------------------------
+| FETCH DOCTORS
+|--------------------------------------------------------------------------
+*/
+
+$doctorQuery = "SELECT * FROM doctors";
+
+$doctorResult = mysqli_query($conn, $doctorQuery);
 
 $error = "";
 $success = "";
@@ -18,6 +27,7 @@ if (isset($_POST['submit'])) {
     $phone = trim($_POST['phone']);
     $age = trim($_POST['age']);
     $gender = trim($_POST['gender']);
+    $doctor_id = trim($_POST['doctor_id']);
     $diagnosis = trim($_POST['diagnosis']);
 
     /*
@@ -32,6 +42,7 @@ if (isset($_POST['submit'])) {
         empty($phone) ||
         empty($age) ||
         empty($gender) ||
+        empty($doctor_id) ||
         empty($diagnosis)
     ) {
 
@@ -83,24 +94,25 @@ if (isset($_POST['submit'])) {
 
             $insertQuery = "INSERT INTO patients
 
-            (patient_name, email, phone, age, gender, diagnosis)
+            (patient_name, email, phone, age, gender, doctor_id, diagnosis)
 
-            VALUES (?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             $insertStmt = mysqli_prepare($conn, $insertQuery);
 
             mysqli_stmt_bind_param(
 
-                $insertStmt,
-                "sssiss",
-                $patient_name,
-                $email,
-                $phone,
-                $age,
-                $gender,
-                $diagnosis
+    $insertStmt,
+    "sssisis",
+    $patient_name,
+    $email,
+    $phone,
+    $age,
+    $gender,
+    $doctor_id,
+    $diagnosis
 
-            );
+);
 
             /*
             |--------------------------------------------------------------------------
@@ -219,6 +231,36 @@ include("../includes/header.php");
                 <option value="Other">
                     Other
                 </option>
+
+            </select>
+
+        </div>
+
+          <div class="mb-3">
+
+            <label>Select Doctor</label>
+
+            <select name="doctor_id"
+                    class="form-control"
+                    required>
+
+                <option value="">
+                    Select Doctor
+                </option>
+
+                <?php while ($doctor = mysqli_fetch_assoc($doctorResult)) { ?>
+
+                    <option value="<?php echo $doctor['id']; ?>">
+
+                        <?php echo $doctor['doctor_name']; ?>
+
+                        -
+
+                        <?php echo $doctor['specialization']; ?>
+
+                    </option>
+
+                <?php } ?>
 
             </select>
 

@@ -21,8 +21,11 @@ try {
 }
 
 // Security helper functions
+// trim
+// → remove tags
+// → convert special chars
 function sanitizeInput($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
+    return htmlspecialchars(strip_tags(trim($data)));  
 }
 
 function redirect($url) {

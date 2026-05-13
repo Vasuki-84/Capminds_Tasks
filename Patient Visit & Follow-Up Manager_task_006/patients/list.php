@@ -61,10 +61,14 @@ include '../includes/header.php';
                         <td><?php echo $patient['join_month'] . ' ' . $patient['join_year']; ?></td>
                         <td><span class="badge bg-info"><?php echo $patient['total_visits']; ?></span></td>
                         <td>
-                            <a href="view.php?id=<?php echo $patient['patient_id']; ?>" class="btn btn-sm btn-outline-info">
+                         <?php 
+                            // Encode the patient ID for URL
+                            $encoded_id = base64_encode($patient['patient_id']);
+                            ?>
+                            <a href="view.php?id=<?php echo $encoded_id; ?>" class="btn btn-sm btn-outline-info">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a href="edit.php?id=<?php echo $patient['patient_id']; ?>" class="btn btn-sm btn-outline-warning">
+                            <a href="edit.php?id=<?php echo $encoded_id; ?>" class="btn btn-sm btn-outline-warning">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>

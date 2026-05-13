@@ -1,6 +1,6 @@
                 </div>
                 <footer class="text-center py-3 mt-auto ">
-                    <p class="text-muted mb-0">© 2024 Healthcare Management System | All calculations powered by SQL</p>
+                    <p class="text-muted mb-0">© 2024 Healthcare Management System </p>
                 </footer>
             </div>
         </div>

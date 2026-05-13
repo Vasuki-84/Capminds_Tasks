@@ -4,7 +4,7 @@ require_once __DIR__ . '/config/db.php';
 include __DIR__ . '/includes/header.php';
 
 // All SQL calculations for dashboard stats
-$stats = [];
+$stats = [];    // Creates empty array to store dashboard statistics
 
 // Total patients
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM patients");
@@ -35,12 +35,12 @@ $nextYear = $currentYear + 1;
 
 // Get birthdays in next 30 days using PHP to build the dates
 $startDate = date('Y-m-d');
-$endDate = date('Y-m-d', strtotime('+30 days'));
+$endDate = date('Y-m-d', strtotime('+30 days')); // after 1 month of start date
 
 $stmt = $pdo->prepare("
     SELECT COUNT(*) as total 
     FROM patients 
-    WHERE CONCAT(
+    WHERE CONCAT(                    
         YEAR(DATE_ADD(dob, INTERVAL (YEAR('$startDate') - YEAR(dob)) YEAR)),
         '-', 
         DATE_FORMAT(dob, '%m-%d')
@@ -153,18 +153,21 @@ $stats['birthdays'] = $stmt->fetch()['total'];
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Monthly visits chart data from SQL
 <?php
+
 $stmt = $pdo->query("
     SELECT 
         DATE_FORMAT(visit_date, '%Y-%m') as month,
         COUNT(*) as count
     FROM visits 
-    WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)
     GROUP BY DATE_FORMAT(visit_date, '%Y-%m')
     ORDER BY month ASC
 ");
+
 $chartData = $stmt->fetchAll();
 $months = [];
 $counts = [];
@@ -195,3 +198,6 @@ new Chart(ctx, {
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
+
+
+<!-- http://localhost/Capminds-Tasks/Patient%20Visit%20&%20Follow-Up%20Manager_task_006/index.php -->

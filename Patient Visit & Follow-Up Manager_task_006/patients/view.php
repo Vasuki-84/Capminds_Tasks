@@ -87,4 +87,47 @@ include '../includes/header.php';
                     </tr>
                     <tr>
                         <th>Join Date:</th>
-                        <td><?php echo date('F d, Y', strtotime($patient['join_date'])); ?></p
+                        <td><?php echo date('F d, Y', strtotime($patient['join_date'])); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td><?php echo htmlspecialchars($patient['phone']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td><?php echo nl2br(htmlspecialchars($patient['address'])); ?></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-calendar"></i> Visit Information</h6>
+                    <hr>
+                    <p><strong>Last Visit Date:</strong> <?php echo $patient['last_visit_date'] ? date('F d, Y', strtotime($patient['last_visit_date'])) : 'No visits'; ?></p>
+                    <p><strong>Days Since Last Visit:</strong> <?php echo $patient['days_since_last_visit'] ?: 'N/A'; ?></p>
+                    <p><strong>Next Follow-up:</strong> <?php echo $patient['next_follow_up'] ? date('F d, Y', strtotime($patient['next_follow_up'])) : 'No follow-up scheduled'; ?></p>
+                    <p><strong>Follow-up Status:</strong> 
+                        <span class="badge bg-<?php echo $patient['follow_up_status'] == 'Overdue' ? 'danger' : 'success'; ?>">
+                            <?php echo $patient['follow_up_status']; ?>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <a href="list.php" class="btn btn-secondary">Back to List</a>
+            <?php 
+            // Encode the ID again for the Add Visit link
+            $encoded_id_for_visit = base64_encode($id);
+            ?>
+            <a href="../visits/add.php?patient_id=<?php echo $encoded_id_for_visit; ?>" class="btn btn-primary">Add Visit</a>
+
+
+           
+        </div>
+     
+    </div>
+</div>
+
+<?php include '../includes/footer.php'; ?>

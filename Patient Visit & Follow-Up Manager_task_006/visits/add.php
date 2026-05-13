@@ -3,7 +3,7 @@ require_once '../config/db.php';
 
 // Get patients for dropdown
 $patients = $pdo->query("SELECT patient_id, name FROM patients ORDER BY name")->fetchAll();
-
+// checks if user submitted the form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $patient_id = (int)$_POST['patient_id'];
     $visit_date = $_POST['visit_date'];

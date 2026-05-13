@@ -71,6 +71,8 @@ include '../includes/header.php';
                             <a href="edit.php?id=<?php echo $encoded_id; ?>" class="btn btn-sm btn-outline-warning">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                             <a href="../visits/patient_visits.php?id=<?php echo $encoded_id; ?>" class="btn btn-sm btn-outline-success">
+        <i class="bi bi-clock-history"></i>
                         </td>
                     </tr>
                     <?php endforeach; ?>

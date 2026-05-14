@@ -10,7 +10,7 @@ $password = '';
 
 try {
 
-// PDO = PHP Data Objects -  A secure database connection method.
+    // PDO = PHP Data Objects -  A secure database connection method.
     // Add port number to the DSN (Data Source Name) - It tells PDO: Which database type,host, port, database, character encoding
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // If database error happens: Throw exception immediately.
@@ -25,7 +25,7 @@ try {
 // → remove tags
 // → convert special chars
 function sanitizeInput($data) {
-    return htmlspecialchars(strip_tags(trim($data)));  
+    return htmlspecialchars(strip_tags(trim($data)));   // Converts special characters, Removes HTML tags, Removes extra spaces.
 }
 
 function redirect($url) {

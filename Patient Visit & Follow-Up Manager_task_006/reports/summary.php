@@ -84,6 +84,7 @@ include '../includes/header.php';
     </div>
 </div>
 
+// jQuery ready function
 <script>
 $(document).ready(function() {
     $('#summaryTable').DataTable({

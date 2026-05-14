@@ -29,26 +29,7 @@ $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM visits WHERE visit_date >= 
 $stmt->execute();
 $stats['recent_visits'] = $stmt->fetch()['total'];
 
-// Patients with birthdays in next 30 days
-$currentYear = date('Y');
-$nextYear = $currentYear + 1;
-
-// Get birthdays in next 30 days using PHP to build the dates
-$startDate = date('Y-m-d');
-$endDate = date('Y-m-d', strtotime('+30 days')); // after 1 month of start date
-
-$stmt = $pdo->prepare("
-    SELECT COUNT(*) as total 
-    FROM patients 
-    WHERE CONCAT(                    
-        YEAR(DATE_ADD(dob, INTERVAL (YEAR('$startDate') - YEAR(dob)) YEAR)),
-        '-', 
-        DATE_FORMAT(dob, '%m-%d')
-    ) BETWEEN '$startDate' AND '$endDate'
-");
-$stmt->execute();
-$stats['birthdays'] = $stmt->fetch()['total'];
-?>
+ ?>
 
 <div class="row mb-4">
     <div class="col-md-6 col-lg-3 mb-3">

@@ -17,7 +17,7 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $upcoming = $stmt->fetchAll();
 
-// Overdue follow-ups
+// Overdue follow-ups 
 $stmt = $pdo->prepare("
     SELECT 
         p.name,

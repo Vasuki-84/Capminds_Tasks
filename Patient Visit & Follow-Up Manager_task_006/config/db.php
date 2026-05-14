@@ -73,6 +73,7 @@ function canDelete() {
     return isAdmin();
 }
 
+// ADD THIS MISSING FUNCTION
 function checkPermission($action) {
     switch($action) {
         case 'add':

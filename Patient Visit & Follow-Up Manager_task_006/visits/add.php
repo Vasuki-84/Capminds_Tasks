@@ -1,9 +1,13 @@
 <?php
 require_once '../config/db.php';
 
+// Add permission check - only Doctor and Admin can add visits
+checkPermission('add');
+
 // Get patients for dropdown
 $patients = $pdo->query("SELECT patient_id, name FROM patients ORDER BY name")->fetchAll();
-// checks if user submitted the form
+
+// Check if user submitted the form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $patient_id = (int)$_POST['patient_id'];
     $visit_date = $_POST['visit_date'];
@@ -18,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($stmt->execute([$patient_id, $visit_date, $consultation_fee, $lab_fee, $visit_date])) {
         $_SESSION['success'] = "Visit added successfully";
-        redirect('list.php');
+        // Fix the redirect - use full path or proper relative path
+        header("Location: list.php");
+        exit();
     }
 }
 
@@ -30,6 +36,16 @@ include '../includes/header.php';
         <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> Add New Visit</h4>
     </div>
     <div class="card-body">
+        <?php if(isset($_SESSION['success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show">
+                <?php 
+                echo $_SESSION['success']; 
+                unset($_SESSION['success']);
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+        
         <form method="POST" action="">
             <div class="row">
                 <div class="col-md-6 mb-3">

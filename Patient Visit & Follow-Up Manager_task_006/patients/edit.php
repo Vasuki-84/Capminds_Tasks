@@ -1,59 +1,39 @@
 <?php
-require_once '../config/db.php';
+require_once __DIR__ . '/../config/db.php';
+checkPermission('edit');
 
-// Get encoded ID from URL and decode it
 $encoded_id = isset($_GET['id']) ? $_GET['id'] : 0;
 $id = base64_decode($encoded_id);
 
-// Validate if decoding was successful and ID is numeric
 if (!$id || !is_numeric($id)) {
-    $_SESSION['error'] = "Invalid patient ID";
-    redirect('list.php');
+    header("Location: list.php");
+    exit();
 }
 
-// Convert to integer for safety
-$id = (int)$id;
-
-// Fetch patient
 $stmt = $pdo->prepare("SELECT * FROM patients WHERE patient_id = ?");
 $stmt->execute([$id]);
 $patient = $stmt->fetch();
 
 if (!$patient) {
-    $_SESSION['error'] = "Patient not found";
-    redirect('list.php');
+    header("Location: list.php");
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $name = sanitizeInput($_POST['name']);
     $dob = $_POST['dob'];
     $phone = sanitizeInput($_POST['phone']);
     $address = sanitizeInput($_POST['address']);
-
-    $stmt = $pdo->prepare("
-        UPDATE patients 
-        SET name = ?, dob = ?, phone = ?, address = ? 
-        WHERE patient_id = ?
-    ");
-
-    // Bind parameters
-    $stmt->bindParam(1, $name, PDO::PARAM_STR);
-    $stmt->bindParam(2, $dob, PDO::PARAM_STR);
-    $stmt->bindParam(3, $phone, PDO::PARAM_STR);
-    $stmt->bindParam(4, $address, PDO::PARAM_STR);
-    $stmt->bindParam(5, $id, PDO::PARAM_INT);
-
-    // Execute query
-    if ($stmt->execute()) {
-
+    
+    $stmt = $pdo->prepare("UPDATE patients SET name=?, dob=?, phone=?, address=? WHERE patient_id=?");
+    if ($stmt->execute([$name, $dob, $phone, $address, $id])) {
         $_SESSION['success'] = "Patient updated successfully";
-
-        redirect('list.php');
+        header("Location: list.php");
+        exit();
     }
 }
 
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="card shadow">
@@ -64,7 +44,7 @@ include '../includes/header.php';
         <?php if(isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
                 <?php 
-                echo $_SESSION['error'];
+                echo $_SESSION['error']; 
                 unset($_SESSION['error']);
                 ?>
             </div>
@@ -97,4 +77,4 @@ include '../includes/header.php';
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

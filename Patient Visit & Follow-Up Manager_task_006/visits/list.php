@@ -1,4 +1,5 @@
 <?php
+
 require_once '../config/db.php';
 
 // SQL calculates days since visit, overdue/upcoming status

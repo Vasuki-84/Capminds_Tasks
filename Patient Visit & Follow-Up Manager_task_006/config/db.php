@@ -1,38 +1,110 @@
 <?php
-// config/db.php - Database configuration with PDO for security
-session_start();
+// config/db.php - Database configuration
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-$host = 'localhost';  // Database server location.
-$port = '3308';       
+$host = 'localhost';
+$port = '3308';
 $dbname = 'healthcare';
 $username = 'root';
-$password = ''; 
+$password = '';
+
+// Define BASE_URL
+if (!defined('BASE_URL')) {
+    define('BASE_URL', '/Capminds-Tasks/Patient%20Visit%20&%20Follow-Up%20Manager_task_006');
+}
 
 try {
-
-    // PDO = PHP Data Objects -  A secure database connection method.
-    // Add port number to the DSN (Data Source Name) - It tells PDO: Which database type,host, port, database, character encoding
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // If database error happens: Throw exception immediately.
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // When fetching data:Return associative arrays by default.
-    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);  // Use REAL prepared statements from MySQL.
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 } catch(PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Security helper functions
-// trim
-// → remove tags
-// → convert special chars
+// Session Management Functions
+function isLoggedIn() {
+    return isset($_SESSION['user_id']) && isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+}
+
+function requireLogin() {
+    if (!isLoggedIn()) {
+        header("Location: " . BASE_URL . "/login.php");
+        exit();
+    }
+}
+
+function getCurrentUser() {
+    if (isLoggedIn()) {
+        return [
+            'user_id' => $_SESSION['user_id'],
+            'username' => $_SESSION['username'],
+            'full_name' => $_SESSION['full_name'],
+            'role' => $_SESSION['role']
+        ];
+    }
+    return null;
+}
+
+// Role checking functions
+function hasRole($role) {
+    return isset($_SESSION['role']) && $_SESSION['role'] === $role;
+}
+
+function isAdmin() {
+    return hasRole('admin');
+}
+
+function isDoctor() {
+    return hasRole('doctor');
+}
+
+function isStaff() {
+    return hasRole('staff');
+}
+
+function canEditPatients() {
+    return isAdmin() || isDoctor();
+}
+
+function canDelete() {
+    return isAdmin();
+}
+
+function checkPermission($action) {
+    switch($action) {
+        case 'add':
+        case 'edit':
+            if (!canEditPatients()) {
+                $_SESSION['error'] = "You don't have permission to perform this action";
+                header("Location: " . BASE_URL . "/index.php");
+                exit();
+            }
+            break;
+        case 'delete':
+            if (!canDelete()) {
+                $_SESSION['error'] = "Only admin can delete records";
+                header("Location: " . BASE_URL . "/index.php");
+                exit();
+            }
+            break;
+    }
+}
+
 function sanitizeInput($data) {
-    return htmlspecialchars(strip_tags(trim($data)));   // Converts special characters, Removes HTML tags, Removes extra spaces.
+    return htmlspecialchars(strip_tags(trim($data)));
 }
 
 function redirect($url) {
-    header("Location: $url");
+    header("Location: " . BASE_URL . "/$url");
     exit();
 }
 
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+// Check authentication for protected pages
+$current_file = basename($_SERVER['PHP_SELF']);
+if ($current_file != 'login.php' && $current_file != 'logout.php') {
+    requireLogin();
 }
+?>

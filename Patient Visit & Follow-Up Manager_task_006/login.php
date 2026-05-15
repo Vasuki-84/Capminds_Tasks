@@ -11,10 +11,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['logged_in']) && $_SESSION['l
 $error = '';
 $success = '';
 
-// Check if logout success message should be shown
-if (isset($_GET['logout']) && $_GET['logout'] == 1) {
-    $success = "You have been successfully logged out.";
-}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
@@ -30,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $stmt->fetch();
             
             if ($user) {
-                // Verify password
+                // Verify hash password
                 if (password_verify($password, $user['password'])) {
                     // Password is correct - set session
                     $_SESSION['user_id'] = $user['user_id'];
@@ -69,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body class="bg-primary bg-gradient min-vh-100 d-flex align-items-center justify-content-center p-3">
+<body class="bg-primary-subtle bg-gradient min-vh-100 d-flex align-items-center justify-content-center p-3">
     <div class="card border-0 shadow-lg rounded-4" style="max-width: 450px; width: 100%;">
         <div class="card-header bg-primary bg-gradient text-white text-center border-0 rounded-top-4 p-4">
             <i class="bi bi-hospital fs-1 mb-2 d-block"></i>
